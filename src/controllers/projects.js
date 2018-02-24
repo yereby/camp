@@ -1,15 +1,39 @@
 const Boom = require('boom')
+const Joi = require('joi')
 
 const Project = require('../models/project')
 
 /**
- * Show the list of all users
+ * Show the list of all projects
  *
- * @example GET /users/
- * @return {Object} The list of users || status code 404
+ * @example GET /projects
+ * @return {Object} The list of projects || status code 404
  */
-module.exports.show = (request, h) => {
+module.exports.list = () => {
   return Project.find({})
-    .then(list => h.view('home/index', { list }) )
+    .then()
     .catch(err => Boom.badImplementation(err))
+}
+
+/**
+ * Create a project
+ *
+ * @example POST /projects
+ * @return {Object} Project created || Some errors
+ */
+module.exports.create = {
+  validate: {
+    payload: {
+      name: Joi.string(),
+      todos: Joi.array(),
+    }
+  },
+  handler: async request => {
+    try {
+      return await Project.create(request.payload)
+    } catch(err) {
+      if (err.code === 11000) { return Boom.conflict(err) }
+      return Boom.forbidden(err)
+    }
+  }
 }

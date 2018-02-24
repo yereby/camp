@@ -1,7 +1,6 @@
 const Projects = require('../controllers/projects')
 
-// ## Projects list
-
 module.exports = [
-  { method: 'GET', path: '/projects', handler: Projects.show },
+  { method: 'GET', path: '/projects', handler: Projects.list },
+  { method: 'POST', path: '/projects', options: Projects.create },
 ]
