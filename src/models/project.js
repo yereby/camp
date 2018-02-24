@@ -20,4 +20,3 @@ const projectSchema = new Mongoose.Schema({
 })
 
 module.exports = Mongoose.model('Project', projectSchema)
-
