@@ -3,8 +3,8 @@ const sinon = require('sinon')
 require('sinon-mongoose')
 const faker = require('faker/locale/fr')
 
-const server = require('../../src/index.js')
-const Todo = require('../../src/models/todo.js')
+const server = require('../../src/index')
+const Todo = require('../../src/models/todo')
 
 const fakeTodo = [{
   content: faker.lorem.sentence(),
