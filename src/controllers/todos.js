@@ -42,7 +42,7 @@ module.exports.create = {
 module.exports.set = {
   validate: {
     params: {
-      _id: Joi.objectId(),
+      id: Joi.objectId(),
     },
     payload: {
       content: Joi.string(),
@@ -51,8 +51,12 @@ module.exports.set = {
   },
   handler: async request => {
     try {
-      const { _id } = request.params
-      const result = await Todo.update({ _id }, request.payload, { runValidators: true })
+      const id = request.params.id
+      const result = await Todo.update(
+        { _id: id },
+        request.payload,
+        { runValidators: true }
+      )
 
       if (result.n === 0) { return Boom.notFound() }
       return result
@@ -66,13 +70,13 @@ module.exports.set = {
 module.exports.remove = {
   validate: {
     params: {
-      _id: Joi.objectId(),
+      id: Joi.objectId(),
     },
   },
   handler: async request => {
     try {
-      const { _id } = request.params
-      const result = await Todo.deleteOne({ _id })
+      const id = request.params.id
+      const result = await Todo.deleteOne({ _id: id })
 
       if (result.n === 0) { return Boom.notFound() }
       return result
