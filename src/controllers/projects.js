@@ -28,6 +28,7 @@ module.exports.create = {
   validate: {
     payload: {
       name: Joi.string(),
+      description: Joi.string(),
       todos: Joi.array(),
     }
   },

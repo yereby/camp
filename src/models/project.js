@@ -10,6 +10,7 @@ const projectSchema = new Mongoose.Schema({
     trim: true,
     required: true,
   },
+  description: String,
   todos: [{ type: ObjectId, ref: 'Todo' }],
   posts: [{
     text: String,
