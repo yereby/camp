@@ -13,7 +13,9 @@ block content
         h3.title #{project.name}
         ul
           each todo in project.todos
-            li #{todo.name}, done : #{todo.done}
+            li
+              | #{todo.content}, 
+              em #{todo.done ? 'done' : 'undone'}
           else
             li No todo
     else
