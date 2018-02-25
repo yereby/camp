@@ -3,7 +3,6 @@ const Joi = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 
 const Project = require('../models/project')
-const Todo = require('../models/todo')
 const Post = require('../models/post')
 
 /**
@@ -30,19 +29,21 @@ module.exports.create = {
     payload: {
       name: Joi.string().required(),
       description: Joi.string().allow(''),
-      todos: Joi.array(),
-      posts: Joi.array()
+      todos: Joi.array().allow(''),
+      posts: Joi.array().allow('')
     }
   },
   handler: async request => {
     try {
       const { posts } = request.payload
 
-      const newPosts = []
-      for (let post of posts) {
-        newPosts.push(await Post.create(post))
+      if (posts) {
+        const newPosts = []
+        for (let post of posts) {
+          newPosts.push(await Post.create(post))
+        }
+        request.payload.posts = newPosts
       }
-      request.payload.posts = newPosts
 
       return await Project.create(request.payload)
     } catch(err) {
@@ -58,21 +59,23 @@ module.exports.addTodo = {
       project: Joi.objectId(),
     },
     payload: {
-      content: Joi.string(),
+      content: Joi.string().required(),
+      done: Joi.boolean()
     }
   },
   handler: async request => {
     try {
-      const _id = request.params.project
-      const content = request.payload.content
+      const project = request.params.project
+      const { content, done } = request.payload
 
-      const todo = await Todo.create({ content })
-
-      return await Project.update(
-        { _id },
-        { $addToSet: { todos: todo['_id'] }},
+      const result = await Project.update(
+        { _id: project },
+        { $addToSet: { todos: { content, done } }},
         { runValidators: true }
       )
+
+      if (result.nModified === 0) { return Boom.notFound() }
+      return result
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
       return Boom.badImplementation(err)
@@ -91,11 +94,15 @@ module.exports.removeTodo = {
     try {
       const { project, todo } = request.params
 
-      return await Project.update(
+      console.log('aAAAAA', project, todo)
+      const result = await Project.update(
         { _id: project },
-        { $pull: { todos: todo }},
+        { $pull: { todos: { _id: todo } }},
         { runValidators: true }
       )
+
+      if (result.nModified === 0) { return Boom.notFound() }
+      return result
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
       return Boom.badImplementation(err)

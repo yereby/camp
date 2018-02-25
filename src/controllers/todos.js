@@ -3,6 +3,7 @@ const Joi = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 
 const Todo = require('../models/todo')
+const Project = require('../models/project')
 
 /**
  * Show the list of all todos
@@ -42,19 +43,22 @@ module.exports.create = {
 module.exports.set = {
   validate: {
     params: {
-      id: Joi.objectId(),
+      project: Joi.objectId(),
+      todo: Joi.objectId(),
     },
     payload: {
-      content: Joi.string(),
+      content: Joi.string().required(),
       done: Joi.boolean(),
     },
   },
   handler: async request => {
     try {
-      const id = request.params.id
-      const result = await Todo.update(
-        { _id: id },
-        request.payload,
+      console.log(request.params, request.payload)
+      const { project, todo } = request.params
+
+      const result = await Project.update(
+        { _id: project, 'todos._id': todo },
+        { $set: { 'todos.$': request.payload }},
         { runValidators: true }
       )
 

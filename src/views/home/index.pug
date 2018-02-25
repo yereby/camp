@@ -20,7 +20,7 @@ block content
                 li
                   .field.is-grouped
                     .control
-                      input.checkbox(type="checkbox" checked=todo.done @click=`setTodo('${todo._id}', ${todo.done})`)
+                      input.checkbox(type="checkbox" checked=todo.done @click=`setTodo('${project._id}', '${todo._id}', '${todo.content}', ${todo.done})`)
                     label.label #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
               else
                 li No todo
@@ -104,7 +104,7 @@ block content
         addTodo() {
           const body = { content: this.task }
           fetch(
-            `/projects/${this.project}/todo`,
+            `/projects/${this.project}/todos`,
             {
               method: 'PUT',
               body: JSON.stringify(body),
@@ -115,14 +115,17 @@ block content
           .then(console.log)
           .catch(console.error)
         },
-        setTodo(todo, done) {
-          const body = { done: !done }
+        setTodo(project, id, content, done) {
+          const todo = {
+            content,
+            done: !done
+          }
 
           fetch(
-            `/todos/${todo}`,
+            `/projects/${project}/todos/${id}`,
             {
               method: 'PUT',
-              body: JSON.stringify(body),
+              body: JSON.stringify(todo),
               headers: { 'Content-type': 'application/json' },
             }
           )
