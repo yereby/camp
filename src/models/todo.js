@@ -1,5 +1,4 @@
 const Mongoose = require('mongoose')
-Mongoose.Promise = global.Promise
 
 const todoSchema = new Mongoose.Schema({
   content: {
@@ -14,4 +13,4 @@ const todoSchema = new Mongoose.Schema({
   },
 })
 
-module.exports = Mongoose.model('Todo', todoSchema)
+module.exports = todoSchema

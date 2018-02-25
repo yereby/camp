@@ -4,6 +4,7 @@ Joi.objectId = require('joi-objectid')(Joi)
 
 const Project = require('../models/project')
 const Todo = require('../models/todo')
+const Post = require('../models/post')
 
 /**
  * Show the list of all projects
@@ -13,7 +14,7 @@ const Todo = require('../models/todo')
  */
 module.exports.list = () => {
   return Project.find({})
-    .populate('todos')
+    .populate('posts')
     .then()
     .catch(err => Boom.badImplementation(err))
 }
@@ -29,10 +30,20 @@ module.exports.create = {
     payload: {
       name: Joi.string().required(),
       description: Joi.string().allow(''),
+      todos: Joi.array(),
+      posts: Joi.array()
     }
   },
   handler: async request => {
     try {
+      const { posts } = request.payload
+
+      const newPosts = []
+      for (let post of posts) {
+        newPosts.push(await Post.create(post))
+      }
+      request.payload.posts = newPosts
+
       return await Project.create(request.payload)
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
