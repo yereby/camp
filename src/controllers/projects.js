@@ -27,9 +27,8 @@ module.exports.list = () => {
 module.exports.create = {
   validate: {
     payload: {
-      name: Joi.string(),
-      description: Joi.string(),
-      todos: Joi.array(),
+      name: Joi.string().required(),
+      description: Joi.string().allow(''),
     }
   },
   handler: async request => {
