@@ -1,4 +1,5 @@
 const Mongoose = require('mongoose')
+const ObjectId = Mongoose.Schema.Types.ObjectId
 Mongoose.Promise = global.Promise
 
 const projectSchema = new Mongoose.Schema({
@@ -9,10 +10,7 @@ const projectSchema = new Mongoose.Schema({
     trim: true,
     required: true,
   },
-  todos: [{
-    name: String,
-    done: Boolean,
-  }],
+  todos: [{ type: ObjectId, ref: 'Todo' }],
   posts: [{
     text: String,
     author: String,
