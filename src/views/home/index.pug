@@ -8,9 +8,9 @@ block header
 
 block content
   #app
-    .columns
+    .columns.is-multiline
       each project in projects
-        .column
+        .column.is-half
           h4.title.is-4= project.name
           p.subtitle= project.description
 
@@ -24,6 +24,14 @@ block content
                     label.label #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
               else
                 li No todo
+
+          each post in project.posts
+            h5.title.is-5= post.title
+            p.subtitle= post.content
+            p= post.author
+          else
+            p No post
+
       else
         p No project
 
