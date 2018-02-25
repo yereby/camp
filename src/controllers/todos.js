@@ -34,7 +34,7 @@ module.exports.create = {
       return await Todo.create(request.payload)
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
-      return Boom.forbidden(err)
+      return Boom.badImplementation(err)
     }
   }
 }
@@ -62,7 +62,7 @@ module.exports.set = {
       return result
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
-      return Boom.forbidden(err)
+      return Boom.badImplementation(err)
     }
   }
 }
