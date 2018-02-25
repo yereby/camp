@@ -13,11 +13,17 @@ block content
         .column
           h4.title.is-4= project.name
           p.subtitle= project.description
-          ul
-            each todo in project.todos
-              li #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
-            else
-              li No todo
+
+          form(action="#" v-on:submit.prevent="")
+            ul
+              each todo in project.todos
+                li
+                  .field.is-grouped
+                    .control
+                      input.checkbox(type="checkbox" checked=todo.done @click=`setTodo('${todo._id}', ${todo.done})`)
+                    label.label #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
+              else
+                li No todo
       else
         p No project
 
@@ -91,6 +97,21 @@ block content
           const body = { content: this.task }
           fetch(
             `/projects/${this.project}/todo`,
+            {
+              method: 'PUT',
+              body: JSON.stringify(body),
+              headers: { 'Content-type': 'application/json' },
+            }
+          )
+          .then(res => res.json())
+          .then(console.log)
+          .catch(console.error)
+        },
+        setTodo(todo, done) {
+          const body = { done: !done }
+
+          fetch(
+            `/todos/${todo}`,
             {
               method: 'PUT',
               body: JSON.stringify(body),
