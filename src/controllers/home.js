@@ -8,8 +8,11 @@ const Projects = require('./projects')
  * @example GET /users/
  * @return {Object} The list of users || status code 404
  */
-module.exports.show = (request, h) => {
-  return Projects.list()
-    .then(projects => h.view('home/index', { projects }))
-    .catch(err => Boom.badImplementation(err))
+module.exports.show = {
+  tags: ['front'],
+  handler: (request, h) => {
+    return Projects.list()
+      .then(projects => h.view('home/index', { projects }))
+      .catch(err => Boom.badImplementation(err))
+  }
 }

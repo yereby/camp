@@ -11,11 +11,14 @@ const Post = require('../models/post')
  * @example GET /projects
  * @return {Object} The list of projects || status code 404
  */
-module.exports.list = () => {
-  return Project.find({})
-    .populate('posts')
-    .then()
-    .catch(err => Boom.badImplementation(err))
+module.exports.list = {
+  tags: ['api'],
+  handler: () => {
+    return Project.find({})
+      .populate('posts')
+      .then()
+      .catch(err => Boom.badImplementation(err))
+  }
 }
 
 /**
@@ -25,6 +28,7 @@ module.exports.list = () => {
  * @return {Object} Project created || Some errors
  */
 module.exports.create = {
+  tags: ['api'],
   validate: {
     payload: {
       name: Joi.string().required(),
@@ -54,6 +58,7 @@ module.exports.create = {
 }
 
 module.exports.addTodo = {
+  tags: ['api'],
   validate: {
     params: {
       project: Joi.objectId(),
@@ -84,6 +89,7 @@ module.exports.addTodo = {
 }
 
 module.exports.removeTodo = {
+  tags: ['api'],
   validate: {
     params: {
       project: Joi.objectId(),

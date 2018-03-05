@@ -1,3 +1,3 @@
 const Home = require('../controllers/home')
 
-module.exports = [{ method: 'GET', path: '/', handler: Home.show }]
+module.exports = [{ method: 'GET', path: '/', options: Home.show }]

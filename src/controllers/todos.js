@@ -11,10 +11,13 @@ const Project = require('../models/project')
  * @example GET /todos
  * @return {Object} The list of todos || status code 404
  */
-module.exports.list = () => {
-  return Todo.find({})
-    .then()
-    .catch(err => Boom.badImplementation(err))
+module.exports.list = {
+  tags: ['api'],
+  handler: () => {
+    return Todo.find({})
+      .then()
+      .catch(err => Boom.badImplementation(err))
+  }
 }
 
 /**
@@ -24,6 +27,7 @@ module.exports.list = () => {
  * @return {Object} Todo created || Some errors
  */
 module.exports.create = {
+  tags: ['api'],
   validate: {
     payload: {
       content: Joi.string(),
@@ -41,6 +45,7 @@ module.exports.create = {
 }
 
 module.exports.set = {
+  tags: ['api'],
   validate: {
     params: {
       project: Joi.objectId(),
@@ -72,6 +77,7 @@ module.exports.set = {
 }
 
 module.exports.remove = {
+  tags: ['api'],
   validate: {
     params: {
       id: Joi.objectId(),
