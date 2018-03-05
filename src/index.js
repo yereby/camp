@@ -38,7 +38,8 @@ server.liftOff = async function () {
   try {
     await server.register([
       require ('inert'),
-      require('vision')
+      require('vision'),
+      require('hapi-swagger'),
     ])
 
     server.views({
