@@ -5,38 +5,30 @@ Joi.objectId = require('joi-objectid')(Joi)
 const Todo = require('../models/todo')
 const Project = require('../models/project')
 
-/**
- * Show the list of all todos
- *
- * @example GET /todos
- * @return {Object} The list of todos || status code 404
- */
-module.exports.list = {
-  tags: ['api'],
-  handler: () => {
-    return Todo.find({})
-      .then()
-      .catch(err => Boom.badImplementation(err))
-  }
-}
-
-/**
- * Create a todo
- *
- * @example POST /todos
- * @return {Object} Todo created || Some errors
- */
-module.exports.create = {
+module.exports.add = {
   tags: ['api'],
   validate: {
+    params: {
+      project: Joi.objectId(),
+    },
     payload: {
-      content: Joi.string(),
-      done: Joi.boolean(),
+      content: Joi.string().required(),
+      done: Joi.boolean()
     }
   },
   handler: async request => {
     try {
-      return await Todo.create(request.payload)
+      const project = request.params.project
+      const { content, done } = request.payload
+
+      const result = await Project.update(
+        { _id: project },
+        { $addToSet: { todos: { content, done } }},
+        { runValidators: true }
+      )
+
+      if (result.nModified === 0) { return Boom.notFound() }
+      return result
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
       return Boom.badImplementation(err)
@@ -80,16 +72,25 @@ module.exports.remove = {
   tags: ['api'],
   validate: {
     params: {
-      id: Joi.objectId(),
+      project: Joi.objectId(),
+      todo: Joi.objectId(),
     },
   },
   handler: async request => {
     try {
-      const id = request.params.id
-      const result = await Todo.deleteOne({ _id: id })
+      const { project, todo } = request.params
 
-      if (result.n === 0) { return Boom.notFound() }
+      const result = await Project.update(
+        { _id: project },
+        { $pull: { todos: { _id: todo } }},
+        { runValidators: true }
+      )
+
+      if (result.nModified === 0) { return Boom.notFound() }
       return result
-    } catch(err) { console.log(err); return Boom.badImplementation(err) }
+    } catch(err) {
+      if (err.code === 11000) { return Boom.conflict(err) }
+      return Boom.badImplementation(err)
+    }
   }
 }
