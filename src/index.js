@@ -41,7 +41,10 @@ server.liftOff = async function () {
       require('vision'),
       {
         plugin: require('hapi-swagger'),
-        options: { grouping: 'tags' }
+        options: {
+          grouping: 'tags',
+          sortEndpoints: 'ordered',
+        }
       },
     ])
 

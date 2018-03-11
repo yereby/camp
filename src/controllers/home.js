@@ -10,8 +10,14 @@ const Projects = require('./projects')
  */
 module.exports.show = {
   tags: ['api', 'home'],
+  description: 'Display the home page',
+  plugins: {
+    'hapi-swagger': {
+      produces: ['text/html'],
+    }
+  },
   handler: (request, h) => {
-    return Projects.list()
+    return Projects.list.handler()
       .then(projects => h.view('home/index', { projects }))
       .catch(err => Boom.badImplementation(err))
   }

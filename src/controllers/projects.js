@@ -13,6 +13,8 @@ const Post = require('../models/post')
  */
 module.exports.list = {
   tags: ['api', 'projects'],
+  description: 'Get the list of all projects',
+  plugins: { 'hapi-swagger': { order: 1 } },
   handler: () => {
     return Project.find({})
       .populate('posts')
@@ -29,12 +31,21 @@ module.exports.list = {
  */
 module.exports.create = {
   tags: ['api', 'projects'],
+  description: 'Create a project',
+  plugins: { 'hapi-swagger': { order: 2 } },
   validate: {
     payload: {
-      name: Joi.string().required(),
-      description: Joi.string().allow(''),
-      todos: Joi.array().allow(''),
-      posts: Joi.array().allow('')
+      name: Joi.string().required().description('The name of the new project'),
+      description: Joi.string().allow('').description('The description of the new project'),
+      todos: Joi.array().allow('').description('Tasks to add to the project').items({
+        content: Joi.string().required().description('Text of the task'),
+        done: Joi.boolean().default(false).description('Task done or not'),
+      }),
+      posts: Joi.array().allow('').description('Posts to add to the project').items({
+        title: Joi.string().required().description('Title of the post'),
+        content: Joi.string().required().description('Content of the post'),
+        author: Joi.string().required().description('Author of the post'),
+      }),
     }
   },
   handler: async request => {
@@ -57,3 +68,23 @@ module.exports.create = {
   }
 }
 
+module.exports.remove = {
+  tags: ['api', 'projects'],
+  description: 'Remove one project and all his todos and posts',
+  plugins: { 'hapi-swagger': { order: 3 } },
+  validate: {
+    params: {
+      project: Joi.objectId().description('ID of the project to delete'),
+    }
+  },
+  handler: async request => {
+    try {
+      const project = request.params.project
+
+      const result = await Project.remove({ _id: project })
+
+      if (result.n === 0) { return Boom.notFound() }
+      return result
+    } catch(err) { return Boom.badImplementation(err) }
+  }
+}

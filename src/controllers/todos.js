@@ -6,9 +6,11 @@ const Project = require('../models/project')
 
 module.exports.list = {
   tags: ['api', 'todos'],
+  description: 'Display todos of a single project',
+  plugins: { 'hapi-swagger': { order: 1 } },
   validate: {
     params: {
-      project: Joi.objectId(),
+      project: Joi.objectId().description('ID of the project to fetch'),
     },
   },
   handler: async request => {
@@ -23,13 +25,20 @@ module.exports.list = {
 
 module.exports.add = {
   tags: ['api', 'todos'],
+  description: 'Add a todo to a project',
+  plugins: {
+    'hapi-swagger': {
+      payloadType: 'form',
+      order: 2,
+    }
+  },
   validate: {
     params: {
-      project: Joi.objectId(),
+      project: Joi.objectId().description('ID of the project to update'),
     },
     payload: {
-      content: Joi.string().required(),
-      done: Joi.boolean()
+      content: Joi.string().required().description('Text of the task'),
+      done: Joi.boolean().default(false).description('Task done or not'),
     }
   },
   handler: async request => {
@@ -54,19 +63,25 @@ module.exports.add = {
 
 module.exports.set = {
   tags: ['api', 'todos'],
+  description: 'Update one todo of a project',
+  plugins: {
+    'hapi-swagger': {
+      payloadType: 'form',
+      order: 3,
+    }
+  },
   validate: {
     params: {
-      project: Joi.objectId(),
-      todo: Joi.objectId(),
+      project: Joi.objectId().description('ID of the project to update'),
+      todo: Joi.objectId().description('Task to update'),
     },
     payload: {
-      content: Joi.string().required(),
-      done: Joi.boolean(),
+      content: Joi.string().required().description('Text of the task'),
+      done: Joi.boolean().required().default(true).description('Task done or not'),
     },
   },
   handler: async request => {
     try {
-      console.log(request.params, request.payload)
       const { project, todo } = request.params
 
       const result = await Project.update(
@@ -86,10 +101,12 @@ module.exports.set = {
 
 module.exports.remove = {
   tags: ['api', 'todos'],
+  description: 'Remove one todo of a project',
+  plugins: { 'hapi-swagger': { order: 4 } },
   validate: {
     params: {
-      project: Joi.objectId(),
-      todo: Joi.objectId(),
+      project: Joi.objectId().description('ID of the project to update'),
+      todo: Joi.objectId().description('Task to remove'),
     },
   },
   handler: async request => {
