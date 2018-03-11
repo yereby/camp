@@ -2,8 +2,24 @@ const Boom = require('boom')
 const Joi = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 
-const Todo = require('../models/todo')
 const Project = require('../models/project')
+
+module.exports.list = {
+  tags: ['api'],
+  validate: {
+    params: {
+      project: Joi.objectId(),
+    },
+  },
+  handler: async request => {
+    try {
+      const project = await Project.findOne({_id: request.params.project })
+
+      if (project) { return project.todos }
+      return Boom.notFound()
+    } catch(err) { return Boom.badImplementation(err) }
+  }
+}
 
 module.exports.add = {
   tags: ['api'],
