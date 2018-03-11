@@ -9,7 +9,7 @@ const Projects = require('./projects')
  * @return {Object} The list of users || status code 404
  */
 module.exports.show = {
-  tags: ['front'],
+  tags: ['api', 'home'],
   handler: (request, h) => {
     return Projects.list()
       .then(projects => h.view('home/index', { projects }))

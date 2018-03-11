@@ -39,7 +39,10 @@ server.liftOff = async function () {
     await server.register([
       require ('inert'),
       require('vision'),
-      require('hapi-swagger'),
+      {
+        plugin: require('hapi-swagger'),
+        options: { grouping: 'tags' }
+      },
     ])
 
     server.views({

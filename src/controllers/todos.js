@@ -5,7 +5,7 @@ Joi.objectId = require('joi-objectid')(Joi)
 const Project = require('../models/project')
 
 module.exports.list = {
-  tags: ['api'],
+  tags: ['api', 'todos'],
   validate: {
     params: {
       project: Joi.objectId(),
@@ -22,7 +22,7 @@ module.exports.list = {
 }
 
 module.exports.add = {
-  tags: ['api'],
+  tags: ['api', 'todos'],
   validate: {
     params: {
       project: Joi.objectId(),
@@ -53,7 +53,7 @@ module.exports.add = {
 }
 
 module.exports.set = {
-  tags: ['api'],
+  tags: ['api', 'todos'],
   validate: {
     params: {
       project: Joi.objectId(),
@@ -85,7 +85,7 @@ module.exports.set = {
 }
 
 module.exports.remove = {
-  tags: ['api'],
+  tags: ['api', 'todos'],
   validate: {
     params: {
       project: Joi.objectId(),

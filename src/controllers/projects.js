@@ -12,7 +12,7 @@ const Post = require('../models/post')
  * @return {Object} The list of projects || status code 404
  */
 module.exports.list = {
-  tags: ['api'],
+  tags: ['api', 'projects'],
   handler: () => {
     return Project.find({})
       .populate('posts')
@@ -28,7 +28,7 @@ module.exports.list = {
  * @return {Object} Project created || Some errors
  */
 module.exports.create = {
-  tags: ['api'],
+  tags: ['api', 'projects'],
   validate: {
     payload: {
       name: Joi.string().required(),
@@ -56,3 +56,4 @@ module.exports.create = {
     }
   }
 }
+
