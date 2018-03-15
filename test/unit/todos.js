@@ -69,10 +69,6 @@ test('Get an empty todo list of a project', async t => {
   projectMock.restore()
 
   let actual = res.statusCode
-  let expected = 200
-  t.equal(actual, expected, 'status code = 200')
-
-  let actualTodo = res.result
-  let expectedTodo = []
-  t.same(actualTodo, expectedTodo, 'Todo list empty')
+  let expected = 204
+  t.equal(actual, expected, 'status code = 204')
 })

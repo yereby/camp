@@ -3,7 +3,6 @@ const Joi = require('joi')
 Joi.objectId = require('joi-objectid')(Joi)
 
 const Project = require('../models/project')
-const Post = require('../models/post')
 
 /**
  * Show the list of all projects
@@ -32,35 +31,17 @@ module.exports.list = {
 module.exports.create = {
   tags: ['api', 'projects'],
   description: 'Create a project',
-  plugins: { 'hapi-swagger': { order: 2 } },
+  plugins: { 'hapi-swagger': { payloadType: 'form', order: 2, } },
   validate: {
     payload: {
       name: Joi.string().required().description('The name of the new project'),
       description: Joi.string().allow('').description('The description of the new project'),
-      todos: Joi.array().allow('').description('Tasks to add to the project').items({
-        content: Joi.string().required().description('Text of the task'),
-        done: Joi.boolean().default(false).description('Task done or not'),
-      }),
-      posts: Joi.array().allow('').description('Posts to add to the project').items({
-        title: Joi.string().required().description('Title of the post'),
-        content: Joi.string().required().description('Content of the post'),
-        author: Joi.string().required().description('Author of the post'),
-      }),
     }
   },
-  handler: async request => {
+  handler: async (request, h) => {
     try {
-      const { posts } = request.payload
-
-      if (posts) {
-        const newPosts = []
-        for (let post of posts) {
-          newPosts.push(await Post.create(post))
-        }
-        request.payload.posts = newPosts
-      }
-
-      return await Project.create(request.payload)
+      const project = await Project.create(request.payload)
+      return h.response(project).created()
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
       return Boom.badImplementation(err)

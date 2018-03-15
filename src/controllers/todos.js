@@ -13,12 +13,14 @@ module.exports.list = {
       project: Joi.objectId().description('ID of the project to fetch'),
     },
   },
-  handler: async request => {
+  handler: async (request, h) => {
     try {
       const project = await Project.findOne({_id: request.params.project })
 
-      if (project) { return project.todos }
-      return Boom.notFound()
+      if (!project) { return Boom.notFound() }
+      if (!project.todos.length) { return h.response().code(204) }
+
+      return project.todos
     } catch(err) { return Boom.badImplementation(err) }
   }
 }
@@ -26,12 +28,7 @@ module.exports.list = {
 module.exports.add = {
   tags: ['api', 'todos'],
   description: 'Add a todo to a project',
-  plugins: {
-    'hapi-swagger': {
-      payloadType: 'form',
-      order: 2,
-    }
-  },
+  plugins: { 'hapi-swagger': { payloadType: 'form', order: 2, } },
   validate: {
     params: {
       project: Joi.objectId().description('ID of the project to update'),
@@ -41,7 +38,7 @@ module.exports.add = {
       done: Joi.boolean().default(false).description('Task done or not'),
     }
   },
-  handler: async request => {
+  handler: async (request, h) => {
     try {
       const project = request.params.project
       const { content, done } = request.payload
@@ -53,23 +50,15 @@ module.exports.add = {
       )
 
       if (result.nModified === 0) { return Boom.notFound() }
-      return result
-    } catch(err) {
-      if (err.code === 11000) { return Boom.conflict(err) }
-      return Boom.badImplementation(err)
-    }
+      return h.response().created()
+    } catch(err) { return Boom.badImplementation(err) }
   }
 }
 
 module.exports.set = {
   tags: ['api', 'todos'],
   description: 'Update one todo of a project',
-  plugins: {
-    'hapi-swagger': {
-      payloadType: 'form',
-      order: 3,
-    }
-  },
+  plugins: { 'hapi-swagger': { payloadType: 'form', order: 3, } },
   validate: {
     params: {
       project: Joi.objectId().description('ID of the project to update'),
@@ -90,7 +79,7 @@ module.exports.set = {
         { runValidators: true }
       )
 
-      if (result.n === 0) { return Boom.notFound() }
+      if (result.nModified === 0) { return Boom.notFound() }
       return result
     } catch(err) {
       if (err.code === 11000) { return Boom.conflict(err) }
