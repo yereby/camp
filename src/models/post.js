@@ -7,7 +7,10 @@ const postSchema = new Mongoose.Schema({
     trim: true,
     required: true,
   },
-  content: String,
+  content: {
+    type: String,
+    required: true,
+  },
   author: String,
   comments: [{ content: String, author: String }],
 })
