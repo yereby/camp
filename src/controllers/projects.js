@@ -49,10 +49,38 @@ module.exports.create = {
   }
 }
 
+module.exports.set = {
+  tags: ['api', 'projects'],
+  description: 'Update a project',
+  plugins: { 'hapi-swagger': { payloadType: 'form', order: 3, } },
+  validate: {
+    params: {
+      project: Joi.objectId().description('ID of the project to update'),
+    },
+    payload: {
+      name: Joi.string().required().description('The name of the project'),
+      description: Joi.string().allow('').description('The description of the project'),
+    },
+  },
+  handler: async (request, h) => {
+    try {
+      const project = request.params.project
+
+      await Project.update(
+        { _id: project },
+        { $set: request.payload },
+        { runValidators: true }
+      )
+
+      return h.response().code(204)
+    } catch(err) { return Boom.badImplementation(err) }
+  }
+}
+
 module.exports.remove = {
   tags: ['api', 'projects'],
   description: 'Remove one project and all his todos and posts',
-  plugins: { 'hapi-swagger': { order: 3 } },
+  plugins: { 'hapi-swagger': { order: 4 } },
   validate: {
     params: {
       project: Joi.objectId().description('ID of the project to delete'),
