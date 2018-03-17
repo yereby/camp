@@ -10,27 +10,29 @@ block content
   #app
     .columns.is-multiline
       each project in projects
-        .column.is-half
-          h4.title.is-4= project.name
-          p.subtitle= project.description
+        .column.is-one-quarter.card
+          .card-header
+            p.card-header-title= project.name
+            p.subtitle= project.description
 
-          form(action="#" v-on:submit.prevent="")
-            ul
-              each todo in project.todos
-                li
-                  .field.is-grouped
-                    .control
-                      input.checkbox(type="checkbox" checked=todo.done @click=`setTodo('${project._id}', '${todo._id}', '${todo.content}', ${todo.done})`)
-                    label.label #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
-              else
-                li No todo
+          .card-content
+            form(action="#" v-on:submit.prevent="")
+              ul
+                each todo in project.todos
+                  li
+                    .field.is-grouped
+                      .control
+                        input.checkbox(type="checkbox" checked=todo.done @click=`setTodo('${project._id}', '${todo._id}', '${todo.content}', ${todo.done})`)
+                      label.label #{todo.content}, <em>#{todo.done ? 'done' : 'undone'}</em>
+                else
+                  li No todo
 
-          each post in project.posts
-            h5.title.is-5= post.title
-            p.subtitle= post.content
-            p= post.author
-          else
-            p No post
+            each post in project.posts
+              h5.title.is-5= post.title
+              p.subtitle= post.content
+              p= post.author
+            else
+              p No post
 
       else
         p No project
