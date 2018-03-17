@@ -48,8 +48,8 @@ test('Get the list of todos of a project that does not exists', async t => {
   projectMock.verify()
   projectMock.restore()
 
-  let actual = res.statusCode
-  let expected = 404
+  const actual = res.statusCode
+  const expected = 404
   t.equal(actual, expected, 'status code = 404')
 })
 
@@ -69,7 +69,7 @@ test('Get an empty todo list of a project', async t => {
   projectMock.verify()
   projectMock.restore()
 
-  let actual = res.statusCode
-  let expected = 204
+  const actual = res.statusCode
+  const expected = 204
   t.equal(actual, expected, 'status code = 204')
 })
