@@ -35,7 +35,7 @@ module.exports.create = {
   validate: {
     payload: {
       name: Joi.string().required().description('The name of the new project'),
-      description: Joi.string().allow('').description('The description of the new project'),
+      description: Joi.string().description('The description of the new project'),
     }
   },
   handler: async (request, h) => {
@@ -66,12 +66,13 @@ module.exports.set = {
     try {
       const project = request.params.project
 
-      await Project.update(
+      const result = await Project.update(
         { _id: project },
         { $set: request.payload },
         { runValidators: true }
       )
 
+      if (result.n === 0) { return Boom.notFound() }
       return h.response().code(204)
     } catch(err) { return Boom.badImplementation(err) }
   }
