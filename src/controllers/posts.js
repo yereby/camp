@@ -122,9 +122,6 @@ module.exports.remove = {
       if (result.nModified === 0) { return Boom.notFound() }
 
       return h.response().code(204)
-    } catch(err) {
-      if (err.code === 11000) { return Boom.conflict(err) }
-      return Boom.badImplementation(err)
-    }
+    } catch(err) { return Boom.badImplementation(err) }
   }
 }
