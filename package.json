@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "author": "Jérémy Giuseppi <yereby@gmail.com>",
   "license": "MIT",
-  "description": "",
+  "description": "This is on open source basecamp clone",
   "main": "src/index.js",
   "scripts": {
     "cover": "tap test/unit/*.js --cov --coverage-report=lcov",
