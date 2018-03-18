@@ -1,9 +1,9 @@
 const faker = require('faker/locale/fr')
 
 const fakeTodos = []
-for (let t = 0; t < 5; t++) {
+for (let i = 0; i < 5; i++) {
   fakeTodos.push({
-    _id: `5a9db83a1bdec6079b92ae3${t}`,
+    _id: `5a9db83a1bdec6079b92ae3${i}`,
     content: faker.lorem.sentence(),
     done: faker.random.boolean(),
   })

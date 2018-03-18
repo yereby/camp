@@ -95,7 +95,7 @@ module.exports.remove = {
       todo: Joi.objectId().description('Task to remove'),
     },
   },
-  handler: async request => {
+  handler: async (request, h) => {
     try {
       const { project, todo } = request.params
 
@@ -105,11 +105,8 @@ module.exports.remove = {
         { runValidators: true }
       )
 
-      if (result.nModified === 0) { return Boom.notFound() }
-      return result
-    } catch(err) {
-      if (err.code === 11000) { return Boom.conflict(err) }
-      return Boom.badImplementation(err)
-    }
+      if (result.n === 0) { return Boom.notFound() }
+      return h.response().code(204)
+    } catch(err) { return Boom.badImplementation(err) }
   }
 }
