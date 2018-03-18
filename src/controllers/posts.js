@@ -5,6 +5,11 @@ Joi.objectId = require('joi-objectid')(Joi)
 const Project = require('../models/project')
 const Post = require('../models/post')
 
+const postPayloadValidation = {
+  title: Joi.string().required().description('Title of the post'),
+  content: Joi.string().required().description('Content of the post'),
+}
+
 module.exports.list = {
   tags: ['api', 'posts'],
   description: 'Display posts of a single project',
@@ -36,10 +41,7 @@ module.exports.add = {
     params: {
       project: Joi.objectId().description('ID of the project to update'),
     },
-    payload: {
-      title: Joi.string().required().description('Title of the post'),
-      content: Joi.string().required().description('Content of the post'),
-    }
+    payload: postPayloadValidation,
   },
   handler: async (request, h) => {
     try {
@@ -71,10 +73,7 @@ module.exports.set = {
       project: Joi.objectId().description('ID of the project to update'),
       post: Joi.objectId().description('Post to update'),
     },
-    payload: {
-      title: Joi.string().required().description('Title of the post'),
-      content: Joi.string().required().description('Content of the post'),
-    },
+    payload: postPayloadValidation,
   },
   handler: async (request, h) => {
     try {
