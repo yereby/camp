@@ -25,6 +25,17 @@ const mongooseOpts = {
 // # Server configuration
 
 const server = new Hapi.Server({ port: process.env.PORT || 1337 })
+const plugins = [
+  require ('inert'),
+  require('vision'),
+  {
+    plugin: require('hapi-swagger'),
+    options: {
+      grouping: 'tags',
+      sortEndpoints: 'ordered',
+    }
+  },
+]
 
 /**
  * Configure and launch the server.
@@ -36,17 +47,7 @@ const server = new Hapi.Server({ port: process.env.PORT || 1337 })
  */
 server.liftOff = async function () {
   try {
-    await server.register([
-      require ('inert'),
-      require('vision'),
-      {
-        plugin: require('hapi-swagger'),
-        options: {
-          grouping: 'tags',
-          sortEndpoints: 'ordered',
-        }
-      },
-    ])
+    await server.register(plugins)
 
     server.views({
       engines: { pug: require('pug') },
