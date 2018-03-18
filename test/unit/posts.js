@@ -12,7 +12,8 @@ const fakePostCreate = {
 }
 
 test('Before all', async () => {
-  await server.liftOff()
+  server.route(require('../../src/routes/posts'))
+  await server.initialize()
 })
 
 test('Get the list of posts of a project', async t => {

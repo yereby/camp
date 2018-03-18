@@ -3,7 +3,18 @@ const test = require('tap').test
 const { server } = require('../lib/init')
 
 test('Before all', async () => {
-  await server.liftOff()
+  await server.register([
+    require('vision'),
+    require('inert')
+  ])
+
+  server.views({
+    engines: { pug: require('pug') },
+    path: './src/views',
+  })
+
+  server.route(require('../../src/routes/statics'))
+  await server.initialize()
 })
 
 test('Get the favicon', async t => {

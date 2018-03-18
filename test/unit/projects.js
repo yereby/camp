@@ -11,9 +11,9 @@ const fakeCreate = {
   description: fakeProject.description,
 }
 
-
 test('Before all', async () => {
-  await server.liftOff()
+  server.route(require('../../src/routes/projects'))
+  await server.initialize()
 })
 
 /*

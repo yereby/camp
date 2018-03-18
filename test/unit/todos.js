@@ -13,7 +13,8 @@ const fakeTodoCreate = {
 }
 
 test('Before all', async () => {
-  await server.liftOff()
+  server.route(require('../../src/routes/todos'))
+  await server.initialize()
 })
 
 test('Get the list of todos of a project', async t => {

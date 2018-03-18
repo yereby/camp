@@ -10,9 +10,11 @@
     "livereload": "livereload . -e pug -w 1700",
     "lint": "eslint .",
     "start": "nodemon -e js,pug src/index.js",
-    "test": "tap -b -- test/unit/*.js",
+    "test:u": "tap -bJ -- test/unit/*.js",
+    "test:i": "tap -bJ -- test/integration/*.js",
+    "test:all": "tap -bJ -- test/{unit,integration}/*.js",
     "test:p": "tap -J --reporter=nyan -- test/unit/*.js",
-    "test:w": "nodemon --exec npm test"
+    "test:w": "nodemon --exec npm run test:all"
   },
   "dependencies": {
     "boom": "^7.1.1",

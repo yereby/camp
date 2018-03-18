@@ -7,7 +7,15 @@ const { server, Project } = require('../lib/init')
 const { fakeProjects } = require('../lib/fixtures.js')
 
 test('Before all', async () => {
-  await server.liftOff()
+  await server.register([require('vision')])
+
+  server.views({
+    engines: { pug: require('pug') },
+    path: './src/views',
+  })
+
+  server.route(require('../../src/routes/home'))
+  await server.initialize()
 })
 
 test('Get the home page', async t => {
@@ -26,5 +34,4 @@ test('Get the home page', async t => {
   let actual = res.statusCode
   let expected = 200
   t.equal(actual, expected, 'status code = 200')
-
 })
