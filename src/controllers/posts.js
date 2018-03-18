@@ -47,15 +47,16 @@ module.exports.add = {
     try {
       const project = request.params.project
 
-      const posts = await Post(request.payload).save()
+      const post = await Post.create(request.payload)
 
       const result = await Project.update(
         { _id: project },
-        { $addToSet: { posts }},
+        { $addToSet: { posts: post }},
         { runValidators: true }
       )
+
       if (result.nModified === 0) {
-        await posts.remove()
+        await Post.remove(post)
         return Boom.notFound()
       }
 
@@ -79,6 +80,8 @@ module.exports.set = {
     try {
       const { project, post } = request.params
 
+      // Check the post is really in the project
+      // And the project exists
       const result = await Project.findOne({
         _id: project,
         posts: { _id: post },
@@ -110,15 +113,15 @@ module.exports.remove = {
     try {
       const { project, post } = request.params
 
-      const res = await Post.remove({ _id: post })
-      if (res.n === 0) { return Boom.notFound() }
-
       const result = await Project.update(
         { _id: project },
         { $pull: { posts: post }},
         { runValidators: true }
       )
-      if (result.nModified === 0) { return Boom.notFound() }
+      if (result.n === 0) { return Boom.notFound() }
+
+      const res = await Post.remove({ _id: post })
+      if (res.n === 0) { return Boom.notFound() }
 
       return h.response().code(204)
     } catch(err) { return Boom.badImplementation(err) }
