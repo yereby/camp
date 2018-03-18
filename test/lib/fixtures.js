@@ -27,7 +27,7 @@ for (let i = 0; i < 2; i++) {
     name: faker.lorem.sentence(),
     description: faker.lorem.paragraphs(),
     todos: fakeTodos,
-    posts: fakePosts.map(post => post._id),
+    posts: fakePosts,
   })
 }
 
